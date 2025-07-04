@@ -1,20 +1,21 @@
 package com.bookly.backend.security;
 
+import java.util.Date;
+
+import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "your_secret_key_here_change_this";
+    private final String SECRET_KEY = "your_secret_key_here_change_this_to_something_longer_and_more_secure";
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
@@ -36,9 +37,9 @@ public class JwtUtil {
                 .getBody();
     }
 
-    public boolean isTokenValid(String token, String username) {
-        final String extractedUsername = extractUsername(token);
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+    public boolean isTokenValid(String token, String email) {
+        final String extractedEmail = extractUsername(token);
+        return (extractedEmail.equals(email) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {

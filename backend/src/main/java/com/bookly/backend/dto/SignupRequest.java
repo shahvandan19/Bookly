@@ -1,16 +1,8 @@
-package com.bookly.backend.model;
+package com.bookly.backend.dto;
 
 import java.time.LocalDate;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "users")
-public class User {
-
-    @Id
-    private String id;
-
+public class SignupRequest {
     private String firstName;
     private String lastName;
     private String username;
@@ -19,9 +11,10 @@ public class User {
     private LocalDate birthday;
     private String profilePictureUrl;
 
-    public User() {}
+    // Constructors
+    public SignupRequest() {}
 
-    public User(String firstName, String lastName, String username, String email, String password, LocalDate birthday, String profilePictureUrl) {
+    public SignupRequest(String firstName, String lastName, String username, String email, String password, LocalDate birthday, String profilePictureUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -31,10 +24,7 @@ public class User {
         this.profilePictureUrl = profilePictureUrl;
     }
 
-    public String getId() {
-        return id;
-    }
-
+    // Getters and Setters
     public String getFirstName() {
         return firstName;
     }
@@ -67,7 +57,6 @@ public class User {
         this.email = email;
     }
 
-    // Here's the password getter and setter you need
     public String getPassword() {
         return password;
     }
