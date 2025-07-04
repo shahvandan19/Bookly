@@ -36,7 +36,21 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         System.out.println("Login attempt for email: " + loginRequest.getEmail());
-        
+
+        // Input validation
+        if (loginRequest.getEmail() == null || loginRequest.getEmail().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("Email is required"));
+        }
+        if (loginRequest.getPassword() == null || loginRequest.getPassword().length() < 6) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("Password must be at least 6 characters"));
+        }
+        if (!loginRequest.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("Invalid email format"));
+        }
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -62,12 +76,45 @@ public class UserController {
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
         System.out.println("Signup attempt for email: " + signupRequest.getEmail());
         
+        // Input validation
+        if (signupRequest.getFirstName() == null || signupRequest.getFirstName().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("First name is required"));
+        }
+        if (signupRequest.getLastName() == null || signupRequest.getLastName().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("Last name is required"));
+        }
+        if (signupRequest.getEmail() == null || signupRequest.getEmail().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("Email is required"));
+        }
+        if (!signupRequest.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("Invalid email format"));
+        }
+        if (signupRequest.getPassword() == null || signupRequest.getPassword().length() < 6) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("Password must be at least 6 characters"));
+        }
+        if (signupRequest.getUsername() == null || signupRequest.getUsername().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("Username is required"));
+        }
+        // Optionally, add more checks (birthday, profilePictureUrl, etc.)
+
         try {
-            // Check if user already exists
+            // Check if user already exists (email)
             if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
                 System.out.println("User already exists: " + signupRequest.getEmail());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse("User with this email already exists"));
+            }
+            // Check if username already exists
+            if (userRepository.findByUsername(signupRequest.getUsername()).isPresent()) {
+                System.out.println("Username already taken: " + signupRequest.getUsername());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("Username is already taken"));
             }
             
             // Create new user
