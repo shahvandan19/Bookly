@@ -28,13 +28,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
+                .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/signup", "/api/users/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/ping", "/api/users/test").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/users/deleteAllUsers").permitAll()
                 .anyRequest().authenticated()
             )
-            .csrf(csrf -> csrf.disable())
             .httpBasic(httpBasic -> httpBasic.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationManager(authenticationManager());

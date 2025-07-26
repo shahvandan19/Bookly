@@ -1,14 +1,21 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { useState } from "react";
 
-
 function Landing() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold text-blue-600 mb-4">Welcome to Bookly!</h1>
-      <div className="space-x-4">
-        <Link to="/login" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Log In</Link>
-        <Link to="/signup" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Sign Up</Link>
+    <div className="flex items-center justify-center min-h-screen w-full bg-white px-4">
+      <div className="w-full max-w-md rounded-lg shadow-lg bg-white p-8 flex flex-col items-center">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-wimbledonPurple mb-6 text-center">
+          Welcome to <span className="text-wimbledonGreen">Bookly</span>!
+        </h1>
+        <div className="flex flex-col md:flex-row w-full gap-4">
+          <Link to="/login" className="flex-1 py-2 rounded-lg bg-wimbledonPurple text-white font-semibold text-center hover:bg-wimbledonGreen transition-colors">
+            Log In
+          </Link>
+          <Link to="/signup" className="flex-1 py-2 rounded-lg bg-wimbledonGreen text-white font-semibold text-center hover:bg-wimbledonPurple transition-colors">
+            Sign Up
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -17,7 +24,7 @@ function Landing() {
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
-  const [jwt, setJwt] = useState(""); // Store JWT for demo
+  const [jwt, setJwt] = useState("");
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -36,8 +43,6 @@ function Login() {
       if (res.ok && data.token) {
         setMessage("Login successful!");
         setJwt(data.token);
-        // For real apps, save JWT to localStorage and redirect to profile
-        // localStorage.setItem("jwt", data.token);
       } else {
         setMessage(data.message || "Login failed.");
       }
@@ -47,48 +52,49 @@ function Login() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <h2 className="text-2xl font-bold mb-6">Log In</h2>
-      <form
-        className="bg-white p-6 rounded shadow-md w-full max-w-sm"
-        onSubmit={handleSubmit}
-      >
-        <input
-          className="mb-4 w-full p-2 border rounded"
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          className="mb-4 w-full p-2 border rounded"
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
-        <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700" type="submit">
-          Log In
-        </button>
-      </form>
-      {message && (
-        <div className="mt-4 text-center text-red-600">{message}</div>
-      )}
-      {jwt && (
-        <div className="mt-4 text-xs break-all text-green-700">
-          <b>JWT:</b> {jwt}
-        </div>
-      )}
+    <div className="flex items-center justify-center min-h-screen w-full bg-white px-4">
+      <div className="w-full max-w-md rounded-lg shadow-lg bg-white p-8 flex flex-col items-center">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6 text-wimbledonPurple">Log In</h2>
+        <form
+          className="w-full flex flex-col gap-4"
+          onSubmit={handleSubmit}
+        >
+          <input
+            className="w-full py-2 px-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-wimbledonPurple"
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="w-full py-2 px-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-wimbledonPurple"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+          <button className="w-full py-2 rounded-lg bg-wimbledonPurple text-white font-semibold hover:bg-wimbledonGreen transition-colors" type="submit">
+            Log In
+          </button>
+        </form>
+        {message && (
+          <div className="mt-4 text-center text-red-600">{message}</div>
+        )}
+        {jwt && (
+          <div className="mt-4 text-xs break-all text-green-700">
+            <b>JWT:</b> {jwt}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
 function Signup() {
-  // State for form fields
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -96,18 +102,15 @@ function Signup() {
     email: "",
     password: "",
   });
-  const [message, setMessage] = useState(""); // For success/error messages
+  const [message, setMessage] = useState("");
 
-  // Handle form input changes
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  // Handle form submission
   async function handleSubmit(e) {
     e.preventDefault();
-    setMessage(""); // Clear previous messages
-
+    setMessage("");
     try {
       const res = await fetch("http://localhost:8080/api/users/signup", {
         method: "POST",

@@ -1,5 +1,7 @@
 package com.bookly.backend.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,12 @@ import com.bookly.backend.repository.UserRepository;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    @GetMapping("")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return ResponseEntity.ok(users);
+    }
 
     @Autowired
     private AuthenticationManager authenticationManager;
